@@ -1,0 +1,12 @@
+---
+# sudo apt-key adv --keyserver keyserver.ubuntu.com --recv E56151BF
+- name: add mesosphere apt-key
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: E56151BF
+  tags: mesosphere-repository
+
+- name: add mesosphere repository
+  apt_repository:
+    repo: deb http://repos.mesosphere.io/{{ ansible_distribution|lower }} {{ ansible_lsb.codename }} main
+  tags: mesosphere-repository

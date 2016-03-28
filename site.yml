@@ -1,0 +1,10 @@
+- hosts: master
+  become: yes
+  roles:
+    - mesosphere-repository
+    - mesosphere
+
+- hosts: slave
+  become: yes
+  roles:
+    - mesosphere-repository
