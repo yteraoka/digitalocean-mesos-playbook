@@ -1,0 +1,12 @@
+---
+- name: install chronos package
+  apt:
+    name: chronos
+  tags: chronos
+
+- name: enable and start chronos
+  service:
+    name: chronos
+    enabled: yes
+    state: started
+  tags: chronos

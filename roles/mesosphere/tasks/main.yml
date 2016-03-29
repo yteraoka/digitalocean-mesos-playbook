@@ -1,3 +1,0 @@
----
-- name: install mesosphere meta package
-  apt

@@ -1,0 +1,93 @@
+---
+- name: install mesos package
+  apt:
+    name: mesos
+  tags: mesos
+
+- name: copy /etc/mesos/zk (master)
+  template:
+    src: zk.j2
+    dest: /etc/mesos/zk
+    owner: root
+    group: root
+    mode: 0644
+  tags: mesos
+  notify: restart mesos-master
+  when: "'master' in group_names"
+
+- name: copy /etc/mesos/zk (slave)
+  template:
+    src: zk.j2
+    dest: /etc/mesos/zk
+    owner: root
+    group: root
+    mode: 0644
+  tags: mesos
+  notify: restart mesos-slave
+  when: "'slave' in group_names"
+
+- name: copy /etc/mesos-master/cluster
+  copy:
+    content: "{{ cluster_name }}"
+    dest: /etc/mesos-master/cluster
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart mesos-master
+  tags: mesos
+  when: "'master' in group_names"
+
+- name: copy /etc/mesos-master/ip, hostname
+  copy:
+    content: "{{ ansible_eth1.ipv4.address }}"
+    dest: /etc/mesos-master/{{ item }}
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - ip
+    - hostname
+  notify: restart mesos-master
+  tags: mesos
+  when: "'master' in group_names"
+
+- name: enable and start mesos-master
+  service:
+    name: mesos-master
+    enabled: yes
+    state: started
+  tags: mesos
+  when: "'master' in group_names"
+
+- name: copy /etc/mesos-slave/ip, hostname
+  copy:
+    content: "{{ ansible_eth1.ipv4.address }}"
+    dest: /etc/mesos-slave/{{ item }}
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - ip
+    - hostname
+  notify: restart mesos-slave
+  tags: mesos
+  when: "'slave' in group_names"
+
+- name: copy /etc/mesos-slave/containerizers
+  copy:
+    content: docker,mesos
+    dest: /etc/mesos-slave/containerizers
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart mesos-slave
+  tags: mesos
+  when: "'slave' in group_names"
+
+- name: enable and start mesos-slave
+  service:
+    name: mesos-slave
+    enabled: yes
+    state: started
+  tags: mesos
+  when: "'slave' in group_names"

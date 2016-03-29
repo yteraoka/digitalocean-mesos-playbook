@@ -1,0 +1,40 @@
+---
+- name: install zookeeper
+  apt:
+    name: zookeeper
+  tags:
+    - mesos
+    - zookeeper
+
+- name: copy zookeeper myid
+  template:
+    src: myid.j2
+    dest: /etc/zookeeper/conf/myid
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart zookeeper
+  tags:
+    - mesos
+    - zookeeper
+
+- name: copy zoo.cfg
+  template:
+    src: zoo.cfg.j2
+    dest: /etc/zookeeper/conf/zoo.cfg
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart zookeeper
+  tags:
+    - mesos
+    - zookeeper
+
+- name: enable and start zookeeper
+  service:
+    name: zookeeper
+    enabled: yes
+    state: started
+  tags:
+    - mesos
+    - zookeeper

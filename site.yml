@@ -2,9 +2,13 @@
   become: yes
   roles:
     - mesosphere-repository
-    - mesosphere
+    - zookeeper
+    - mesos
+    - marathon
+    - chronos
 
 - hosts: slave
   become: yes
   roles:
     - mesosphere-repository
+    - mesos

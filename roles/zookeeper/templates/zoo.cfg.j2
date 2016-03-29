@@ -15,15 +15,16 @@ dataDir=/var/lib/zookeeper
 
 # the port at which the clients will connect
 clientPort=2181
+clientPortAddress={{ ansible_eth1.ipv4.address }}
 
 # specify all zookeeper servers
 # The fist port is used by followers to connect to the leader
 # The second one is used for leader election
-{% for server in groups['master'] %}
-server.{{ loop.index }}=
 #server.1=zookeeper1:2888:3888
 #server.2=zookeeper2:2888:3888
 #server.3=zookeeper3:2888:3888
+{% for server in groups['master'] %}
+server.{{ loop.index }}={{ server }}:2888:3888
 {% endfor %}
 
 

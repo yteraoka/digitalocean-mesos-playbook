@@ -1,0 +1,33 @@
+---
+- name: install software-properties
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - python-software-properties
+    - software-properties-common
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  tags: marathon
+
+- name: add ppa:webupd8team/java
+  apt_repository:
+    repo: ppa:webupd8team/java
+  tags: marathon
+
+- name: install marathon package
+  apt:
+    name: "{{ item }}"
+  with_items:
+    - oracle-java8-installer
+    - oracle-java8-set-default
+    - marathon
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  tags: marathon
+
+- name: enable and start marathon
+  service:
+    name: marathon
+    enabled: yes
+    state: started
+  tags: marathon
